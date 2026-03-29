@@ -2,5 +2,7 @@
 .idea/
 target/
 uploads/
+!src/main/resources/static/uploads/
+!src/main/resources/static/uploads/**
 !docs/uploads/
 !docs/uploads/**

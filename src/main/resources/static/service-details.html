@@ -205,18 +205,108 @@
   <script src="assets/js/main.js"></script>
 
   <script>
+    window.__CMS_DATA__ = {
+      "hero": {
+        "fullName": "Celia Li",
+        "title": "Java Background Developer",
+        "backgroundUrl": "/assets/img/portfolio/DSC00296.jpg",
+        "typedItems": "Designer , Cooker,  Developer",
+        "twitterUrl": "",
+        "facebookUrl": "",
+        "instagramUrl": "",
+        "linkedinUrl": ""
+      },
+      "about": {
+        "avatarUrl": "",
+        "bio": "Motivated Web Developer with hands-on experience in WordPress website development, maintenance, and\n optimisation.",
+        "highlights": [
+          "Holds a Master’s degree in Information Technology and Information Technology Management from the University of Sydney.",
+          "Strong background in full-stack development, data analysis, and client-facing communication.",
+          "Passionate about building responsive, user-friendly websites and continuously improving performance and SEO."
+        ]
+      },
+      "contact": {
+        "address": "Hurstville, Sydney",
+        "phone": "+61422222222",
+        "email": "leexh.k@gmail.com"
+      },
+      "footer": {
+        "title": "Celia",
+        "description": "",
+        "copyright": ""
+      }
+    };
+
+    window.__CMS_SERVICES__ = [
+      {
+        "id": 2,
+        "title": "Software Developer",
+        "summary": "Intern,  Peak Technology Pty Ltd",
+        "iconClass": "bi bi-bar-chart",
+        "imageUrl": "",
+        "content": "<h1>Peak Technology Pty Ltd June 2023 - October 2023</h1><p><br></p><p>• Developed and maintained WordPress websites (including TMI Selection), improving site performance</p><p>and usability</p><p>• Gathered and analysed client requirements, translating business needs into functional web solutions</p><p>• Collaborated with cross-functional teams to implement features, integrate data, and deploy production-</p><p>ready websites</p><p>• Performed website optimisation including page speed, responsiveness, and basic SEO improvements</p>"
+      },
+      {
+        "id": 3,
+        "title": "Account Manager",
+        "summary": "Trademax Australia Limited",
+        "iconClass": "bi bi-binoculars",
+        "imageUrl": "",
+        "content": "<h1>Trademax Australia Limited      June 2024 - July 2025</h1><p><br></p><p>• Managed client relationships across Forex, indices, commodities, and US stock CFDs</p><p>• Supported onboarding processes including account setup, KYC verification, and fund transactions</p><p>• Provided technical guidance on MT4/MT5 platforms and explained trading rules and risk management</p><p>• Consistently received positive client feedback through effective communication and problem-solving</p><p>• Ensured full compliance with ASIC regulations and internal policies</p>"
+      },
+      {
+        "id": 4,
+        "title": "Machine Learning Developer",
+        "summary": "App Usage Prediction System",
+        "iconClass": "bi bi-brightness-high",
+        "imageUrl": "",
+        "content": "<h1>App Usage Prediction System</h1><p><br></p><p>• Designed a context-aware recommendation system addressing cold-start challenges</p><p>• Implemented and compared models including KNN, SVM, and Decision Trees</p><p>• Conducted data preprocessing, model training, and evaluation using Python</p>"
+      },
+      {
+        "id": 5,
+        "title": "Android Developer",
+        "summary": "Indoor Positioning Alert System",
+        "iconClass": "bi bi-calendar4-week",
+        "imageUrl": "",
+        "content": "<h1>Indoor Positioning Alert System</h1><p><br></p><p>• Independently developed an Android application with real-time positioning and alert features</p><p>• Implemented GPS tracking, distance alerts, and user management functionalities</p><p>• Built using Kotlin with XML-based UI in Android Studio</p>"
+      },
+      {
+        "id": 6,
+        "title": "Deep Learning Project",
+        "summary": "Noisy Label Classification",
+        "iconClass": "bi bi-briefcase",
+        "imageUrl": "",
+        "content": "<h1>Noisy Label Classification</h1><p><br></p><p>• Built CNN models to handle datasets with significant label noise (30%–60%)</p><p>• Applied Transition Matrix and Co-Teaching methods to improve classification accuracy</p><p>• Achieved over 95% accuracy on clean test data, demonstrating strong robustness</p>"
+      },
+      {
+        "id": 1,
+        "title": "Natural Language Processing",
+        "summary": "Developed an MBTI personality prediction model using Twitter data",
+        "iconClass": "bi bi-card-checklist",
+        "imageUrl": "",
+        "content": "<h1>Developed an MBTI personality prediction model using Twitter data</h1><p><br></p><p>• Conducted personality classification using Recurrent Neural Networks (RNNs) for textual data</p><p>analysis.</p><p>• Responsible for applying Recurrent Neural Networks (RNNs) to the personality classification task,</p><p>covering data preprocessing, word embeddings, model construction, and evaluation.</p><p>• Applied RNN architecture, proficiently handling data and integrating word embeddings for nu-</p><p>anced linguistic comprehension.</p><p>• Successfully engineered and evaluated RNN models, ensuring accurate personality trait catego-</p><p>rization with improved efficiency.</p>"
+      }
+    ];
+  </script>
+
+  <script>
     // 从 query 参数读取服务 id 并拉取详情
     async function loadServiceDetail() {
       const params = new URLSearchParams(window.location.search);
       const id = params.get('id');
       if (!id) return;
 
-      const resp = await fetch(`/api/services/${id}`);
-      if (!resp.ok) return;
-      const json = await resp.json();
-      if (!json.success) return;
-
-      const item = json.data || {};
+      let item = null;
+      if (Array.isArray(window.__CMS_SERVICES__)) {
+        item = window.__CMS_SERVICES__.find(s => String(s.id) === String(id)) || null;
+      }
+      if (!item) {
+        const resp = await fetch(`/api/services/${id}`);
+        if (!resp.ok) return;
+        const json = await resp.json();
+        if (!json.success) return;
+        item = json.data || {};
+      }
       const titleEl = document.getElementById('serviceDetailTitle');
       if (titleEl) titleEl.textContent = item.title || 'Service Details';
 
@@ -243,11 +333,14 @@
     }
 
     async function loadServiceList(activeId) {
-      const resp = await fetch('/api/services');
-      if (!resp.ok) return;
-      const json = await resp.json();
-      if (!json.success) return;
-      const items = Array.isArray(json.data) ? json.data : [];
+      let items = Array.isArray(window.__CMS_SERVICES__) ? window.__CMS_SERVICES__ : null;
+      if (!items) {
+        const resp = await fetch('/api/services');
+        if (!resp.ok) return;
+        const json = await resp.json();
+        if (!json.success) return;
+        items = Array.isArray(json.data) ? json.data : [];
+      }
       const list = document.getElementById('serviceDetailsList');
       if (!list) return;
       list.innerHTML = items.map(item => {
@@ -257,11 +350,14 @@
     }
 
     async function loadFooter() {
-      const resp = await fetch('/api/homepage');
-      if (!resp.ok) return;
-      const json = await resp.json();
-      if (!json.success) return;
-      const data = json.data || {};
+      let data = window.__CMS_DATA__ || null;
+      if (!data) {
+        const resp = await fetch('/api/homepage');
+        if (!resp.ok) return;
+        const json = await resp.json();
+        if (!json.success) return;
+        data = json.data || {};
+      }
       const footer = data.footer || {};
       const hero = data.hero || {};
       const footerTitleEl = document.getElementById('footerTitle');
