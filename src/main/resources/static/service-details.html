@@ -123,8 +123,8 @@
             <div class="help-box d-flex flex-column justify-content-center align-items-center">
               <i class="bi bi-headset help-icon"></i>
               <h4>Have a Question?</h4>
-              <p class="d-flex align-items-center mt-2 mb-0"><i class="bi bi-telephone me-2"></i> <span>+61 4222222222</span></p>
-              <p class="d-flex align-items-center mt-1 mb-0"><i class="bi bi-envelope me-2"></i> <a href="leexh.k@gmail.com">leexh.k@gmail.com</a></p>
+              <p class="d-flex align-items-center mt-2 mb-0"><i class="bi bi-telephone me-2"></i> <span id="serviceHelpPhone">+61 4222222222</span></p>
+              <p class="d-flex align-items-center mt-1 mb-0"><i class="bi bi-envelope me-2"></i> <a id="serviceHelpEmail" href="mailto:leexh.k@gmail.com">leexh.k@gmail.com</a></p>
             </div>
 
           </div>
@@ -261,6 +261,7 @@
       const json = await resp.json();
       if (!json.success) return;
       const data = json.data || {};
+      const contact = data.contact || {};
       const footer = data.footer || {};
       const hero = data.hero || {};
       const footerTitleEl = document.getElementById('footerTitle');
@@ -284,6 +285,14 @@
         footerSocialLinks.forEach((link, index) => {
           link.href = urls[index] || '#';
         });
+      }
+
+      const helpPhoneEl = document.getElementById('serviceHelpPhone');
+      if (helpPhoneEl && contact.phone) helpPhoneEl.textContent = contact.phone;
+      const helpEmailEl = document.getElementById('serviceHelpEmail');
+      if (helpEmailEl && contact.email) {
+        helpEmailEl.textContent = contact.email;
+        helpEmailEl.href = 'mailto:' + contact.email;
       }
     }
 
