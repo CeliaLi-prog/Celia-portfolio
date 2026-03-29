@@ -924,6 +924,10 @@
   // ===== Services =====
   async function loadServices() {
     const token = localStorage.getItem('token');
+    if (getRoleFromToken() !== 'ADMIN') {
+      renderServices([]);
+      return;
+    }
     if (!token) {
       renderServices([]);
       return;
@@ -1387,6 +1391,17 @@
     applyCmsRoleState();
   }
 
+  function getRoleFromToken() {
+    const token = localStorage.getItem('token');
+    if (!token) return '';
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1] || ''));
+      return payload && payload.role ? payload.role : '';
+    } catch (e) {
+      return '';
+    }
+  }
+
   window.addEventListener('storage', (e) => {
     if (e.key === 'token') {
       updateStatus();
@@ -1519,6 +1534,10 @@
   // ===== Portfolio =====
   async function loadPortfolio() {
     const token = localStorage.getItem('token');
+    if (getRoleFromToken() !== 'ADMIN') {
+      renderPortfolio([]);
+      return;
+    }
     if (!token) {
       renderPortfolio([]);
       return;
