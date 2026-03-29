@@ -2,3 +2,5 @@
 .idea/
 target/
 uploads/
+!docs/uploads/
+!docs/uploads/**
