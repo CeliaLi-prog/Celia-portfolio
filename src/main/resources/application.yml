@@ -1,5 +1,6 @@
 server:
   port: ${PORT:8080}
+  address: 0.0.0.0
 
 spring:
   datasource:
@@ -30,3 +31,7 @@ app:
     enabled: ${APP_INIT_ADMIN_ENABLED:false}
     username: ${APP_INIT_ADMIN_USERNAME:admin}
     password: ${APP_INIT_ADMIN_PASSWORD:}
+  demo-user:
+    enabled: ${APP_DEMO_USER_ENABLED:false}
+    username: ${APP_DEMO_USER_USERNAME:demo}
+    password: ${APP_DEMO_USER_PASSWORD:}

@@ -135,7 +135,7 @@
               <a href="/" target="_blank"><i class="bi bi-box-arrow-up-right"></i><span>Open Public Site</span></a>
               <a href="#" id="btnSaveAll"><i class="bi bi-box-arrow-right"></i><span>Log Out &amp; Return to Home</span></a>
             </div>
-            <small class="text-muted d-block mt-2">
+            <small class="text-muted d-block mt-2" id="cmsRoleHint">
               Tip: Save then refresh the public homepage to see changes.
             </small>
           </div>
@@ -1384,6 +1384,7 @@
     } catch (e) {
       apiStatusEl.textContent = 'API: offline';
     }
+    applyCmsRoleState();
   }
 
   window.addEventListener('storage', (e) => {
@@ -1733,6 +1734,32 @@
       window.location.href = '/';
     });
 
+  function applyCmsRoleState() {
+    const token = localStorage.getItem('token');
+    const hint = document.getElementById('cmsRoleHint');
+    if (!token) {
+      if (hint) hint.textContent = 'Tip: login required to edit content.';
+      return;
+    }
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1] || ''));
+      const role = payload && payload.role ? payload.role : '';
+      if (role !== 'ADMIN') {
+        document.querySelectorAll('button[id^="btn"][id$="Save"]').forEach(btn => {
+          btn.disabled = true;
+        });
+        document.querySelectorAll('button[id$="SavePreview"], #btnHeroSavePreview, #btnAboutSavePreview').forEach(btn => {
+          btn.disabled = true;
+        });
+        if (hint) hint.textContent = 'Demo account is read-only. Please login as admin to edit.';
+      } else if (hint) {
+        hint.textContent = 'Tip: Save then refresh the public homepage to see changes.';
+      }
+    } catch (e) {
+      if (hint) hint.textContent = 'Tip: login required to edit content.';
+    }
+  }
+
   const btnLoginOpen = document.getElementById('btnLoginOpen');
   if (btnLoginOpen) {
     btnLoginOpen.addEventListener('click', (e) => {
@@ -1836,6 +1863,7 @@
     showTab('tab-home');
     initMediaUpload();
     updateStatus();
+    applyCmsRoleState();
   });
 </script>
 </body>
