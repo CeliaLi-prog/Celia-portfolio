@@ -1733,6 +1733,36 @@
       window.location.href = '/';
     });
 
+  const btnLoginOpen = document.getElementById('btnLoginOpen');
+  if (btnLoginOpen) {
+    btnLoginOpen.addEventListener('click', (e) => {
+      e.preventDefault();
+      window.location.href = '/auth.html';
+    });
+  }
+
+  const btnLogoutTop = document.getElementById('btnLogout');
+  if (btnLogoutTop) {
+    btnLogoutTop.addEventListener('click', async (e) => {
+      e.preventDefault();
+      try {
+        const token = localStorage.getItem('token');
+        if (token) {
+          await fetch('/api/auth/logout', {
+            method: 'POST',
+            headers: { 'Authorization': 'Bearer ' + token }
+          });
+        }
+      } catch (err) {
+        console.warn('Logout failed:', err);
+      } finally {
+        localStorage.removeItem('token');
+        updateStatus();
+        window.location.href = '/';
+      }
+    });
+  }
+
   const cmsTabs = document.getElementById('cmsTabs');
   function initServiceEditor() {
     if (window.serviceQuill || !window.Quill) return;
